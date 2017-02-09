@@ -8,9 +8,9 @@
 
     initialize: function (params) {
       if (_.isUndefined(params) || _.isNull(params)) {
-        console.log('Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:');
-        console.log('\t1. An object. To create an empty board of size n:\n\t\t{n: %c<num>%c} - Where %c<num> %cis the dimension of the (empty) board you wish to instantiate\n\t\t%cEXAMPLE: var board = new Board({n:5})', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
-        console.log('\t2. An array of arrays (a matrix). To create a populated board of size n:\n\t\t[ [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...] ] - Where each %c<val>%c is whatever value you want at that location on the board\n\t\t%cEXAMPLE: var board = new Board([[1,0,0],[0,1,0],[0,0,1]])', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
+        // console.log('Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:');
+        // console.log('\t1. An object. To create an empty board of size n:\n\t\t{n: %c<num>%c} - Where %c<num> %cis the dimension of the (empty) board you wish to instantiate\n\t\t%cEXAMPLE: var board = new Board({n:5})', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
+        // console.log('\t2. An array of arrays (a matrix). To create a populated board of size n:\n\t\t[ [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...] ] - Where each %c<val>%c is whatever value you want at that location on the board\n\t\t%cEXAMPLE: var board = new Board([[1,0,0],[0,1,0],[0,0,1]])', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
       } else if (params.hasOwnProperty('n')) {
         this.set(makeEmptyMatrix(this.get('n')));
       } else {
@@ -79,12 +79,29 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
+      var row = rowIndex;
+      var count = 0;
+      for (var index = 0; index < row.length; index++) {
+        count += row[index];
+      }
+      if (count > 1) {
+        return true;
+      }
       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+
+      var conflict = false;
+      for (var row = 0; row < board.length; row++) {
+        if (this.hasRowConflictAt(board[row])) {
+          conflict = true;
+        }
+      }
+      return conflict;
+      // return false; // fixme
     },
 
 
@@ -94,12 +111,51 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var conflicts = colIndex.reduce(function(total, current) {
+        return total + current;
+      });
+      return conflicts > 1 ? true : false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var length = this.get('n');
+      for (var index = 0; index < length; index++) {
+        var column = [];
+        for (var rowIndex = 0; rowIndex < length; rowIndex++) {
+          column.push(this.get(0)[index]);
+        }
+        if (this.hasColConflictAt(column)) {
+          return true;
+        }
+      }
+      return false;
+
+
+
+
+        // console.log('rows' + board.get(index)[0]);
+      
+      //for (var )
+      // var board = this.rows();
+      // var conflicts = false;
+      // var columns = [];
+      // for (var row = 0; row < board.length; row++) {
+      //   var column = [];
+      //   for (var rowIndex = 0; rowIndex < board.length; rowIndex++) {
+      //     column.push(board[rowIndex][row]);
+      //   }
+      //   columns.push(column);
+      // }
+      // for (var col = 0; col < columns.length; col++) {
+      //   if (this.hasColConflictAt(columns[col])) {
+      //     conflicts = true;
+      //   }
+      // }
+      // return conflicts;
+      // var board = new Board(this.rows());
+      // console.log('this row: ', this.rows());
+      //       console.log('board: ', board);
     },
 
 
