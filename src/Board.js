@@ -79,24 +79,18 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      var row = rowIndex;
-      var count = 0;
-      for (var index = 0; index < row.length; index++) {
-        count += row[index];
-      }
-      if (count > 1) {
-        return true;
-      }
-      return false; // fixme
+      var conflicts = rowIndex.reduce(function(total, current) {
+        return total + current;
+      });
+      return conflicts > 1 ? true : false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      var board = this.rows();
-
+      var length = this.get('n');
       var conflict = false;
-      for (var row = 0; row < board.length; row++) {
-        if (this.hasRowConflictAt(board[row])) {
+      for (var rowIndex = 0; rowIndex < length; rowIndex++) {
+        if (this.hasRowConflictAt(this.get(rowIndex))) {
           conflict = true;
         }
       }
@@ -200,25 +194,26 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      var conflicts = minorDiagonalColumnIndexAtFirstRow.reduce(function(total, current) {
-        return total + current;
-      });
-      return conflicts > 1 ? true : false;
+      // var conflicts = minorDiagonalColumnIndexAtFirstRow.reduce(function(total, current) {
+      //   return total + current;
+      // });
+      // return conflicts > 1 ? true : false;
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var length = this.get('n');
-      for (var column = length - 1; column >= 0; column--) { 
+      for (var column = 0; column < length; column++) { 
         for (var row = length - 1; row >= 0; row--) {
           var diagonal = [];
           var rowShift = row;
           var colShift = column;
-          debugger;
-          while (rowShift >= 0 && colShift >= 0) {
+          // debugger;
+          while (rowShift >= 0 && colShift < length) {
             diagonal.push(this.get(rowShift)[colShift]);
             rowShift--;
-            colShift--;
+            colShift++;
           }
           if (this.hasMajorDiagonalConflictAt(diagonal)) {
             return true;
